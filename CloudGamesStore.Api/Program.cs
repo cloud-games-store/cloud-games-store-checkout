@@ -1,0 +1,121 @@
+using CloudGamesStore.Application.Interfaces;
+using CloudGamesStore.Application.Services;
+using CloudGamesStore.Domain.Interfaces;
+using CloudGamesStore.Infrastructure.Data;
+using CloudGamesStore.Infrastructure.Repositories;
+using CloudGamesStore.Infrastructure.Services;
+using FluentValidation;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Add FluentValidation
+//builder.Services.AddFluentValidation(fv =>
+//    fv.RegisterValidatorsFromAssemblyContaining<CheckoutRequestValidator>());
+
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
+
+// Database
+builder.Services.AddDbContext<GameStoreCheckoutDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// HTTP Client for payment service
+builder.Services.AddHttpClient<PaymentService>();
+
+// Repositories
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
+
+// Services
+builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+builder.Services.AddScoped<IPricingService, PricingService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+// Authentication (JWT Bearer example)
+//builder.Services.AddAuthentication("Bearer")
+//    .AddJwtBearer("Bearer", options =>
+//    {
+//        options.Authority = builder.Configuration["Authentication:Authority"];
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateAudience = false
+//        };
+//    });
+
+builder.Services.AddAuthorization();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>())
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+// Rate Limiting
+//builder.Services.AddRateLimiter(options =>
+//{
+//    options.AddFixedWindowLimiter("CheckoutPolicy", config =>
+//    {
+//        config.PermitLimit = 10;
+//        config.Window = TimeSpan.FromMinutes(1);
+//        config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+//        config.QueueLimit = 5;
+//    });
+//});
+
+// Caching
+//builder.Services.AddMemoryCache();
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+//});
+
+// Background Services
+builder.Services.AddHostedService<OrderProcessingBackgroundService>();
+
+// Health Checks
+//builder.Services.AddHealthChecks()
+//    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!)
+//    .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
+
+// Logging
+//builder.Services.AddSerilog((services, lc) => lc
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .ReadFrom.Services(services)
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console()
+//    .WriteTo.File("logs/gamestore-.txt", rollingInterval: RollingInterval.Day));
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
