@@ -41,6 +41,7 @@ builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 
 // Services
 builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
