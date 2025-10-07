@@ -16,9 +16,9 @@ namespace CloudGamesStore.Infrastructure.Mappings
             builder.HasKey(e => e.Id);
             builder.Property(e => e.UnitPrice).HasPrecision(18, 2);
             builder.Property(e => e.TotalPrice).HasPrecision(18, 2);
-            builder.HasOne(e => e.Game)
-                .WithMany()
-                .HasForeignKey(e => e.GameId);
+            //builder.HasOne(e => e.Game)
+            //    .WithMany()
+            //    .HasForeignKey(e => e.GameId);
         }
     }
 }

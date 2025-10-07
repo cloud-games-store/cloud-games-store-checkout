@@ -19,7 +19,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(c => c.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .FirstOrDefaultAsync(c => c.Id == id);
             }
             catch (Exception ex)
@@ -35,7 +35,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(c => c.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .FirstOrDefaultAsync(c => c.UserId == userId);
             }
             catch (Exception ex)
@@ -85,17 +85,19 @@ namespace CloudGamesStore.Infrastructure.Repositories
                 }
                 else
                 {
-                    var game = await _context.Games.FindAsync(gameId);
-                    if (game == null || !game.IsActive)
-                        throw new InvalidOperationException($"Game with ID {gameId} not found or inactive");
+                    // TODO: Check if the game exists in the Game microservice.
+                    //var game = await _context.Games.FindAsync(gameId);
+                    //if (game == null || !game.IsActive)
+                    //    throw new InvalidOperationException($"Game with ID {gameId} not found or inactive");
 
                     var cartItem = new CartItem
                     {
                         CartId = cart.Id,
                         GameId = gameId,
-                        Game = game,
+                        GameName = "Game2",//game.Name,
+                        GameGenre = "Action",//game.Genre,
                         Quantity = quantity,
-                        UnitPrice = game.Price
+                        UnitPrice = 50//game.Price
                     };
                     await _context.CartItems.AddAsync(cartItem);
                 }
@@ -110,6 +112,45 @@ namespace CloudGamesStore.Infrastructure.Repositories
                 throw;
             }
         }
+
+        //public async Task AddItemToCartAsync(int userId, CartItem cartItem, int quantity = 1)
+        //{
+        //    try
+        //    {
+        //        var cart = await GetOrCreateCartForUserAsync(userId);
+        //        var existingItem = cart.Items.FirstOrDefault(i => i.GameId == cartItem.GameId);
+
+        //        if (existingItem != null)
+        //        {
+        //            cartItem = existingItem;
+        //            existingItem.Quantity += quantity;
+        //            _context.CartItems.Update(existingItem);
+        //        }
+        //        else
+        //        {
+        //            // TODO: Check if the game exists in the Game microservice.
+        //            var game = await _context.Games.FindAsync(cartItem?.GameId);
+        //            if (game == null || !game.IsActive)
+        //                throw new InvalidOperationException($"Game with ID {cartItem.GameId} not found or inactive");
+
+        //            cartItem.CartId = cart.Id;
+        //            cartItem.GameId = cartItem.GameId;
+        //            cartItem.Quantity = quantity;
+        //            cartItem.UnitPrice = game.Price;
+
+        //            await _context.CartItems.AddAsync(cartItem);
+        //        }
+
+        //        cart.UpdatedAt = DateTime.UtcNow;
+        //        await _context.SaveChangesAsync();
+        //        _logger.LogInformation("Added {Quantity} of game {GameId} to cart for user {UserId}", quantity, cartItem.GameId, userId);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error adding item to cart for user {UserId}", userId);
+        //        throw;
+        //    }
+        //}
 
         public async Task RemoveItemFromCartAsync(int userId, int gameId)
         {

@@ -14,12 +14,23 @@ namespace CloudGamesStore.Infrastructure.Mappings
         public void Configure(EntityTypeBuilder<CartItem> builder)
         {
             builder.HasKey(e => e.Id);
+            builder.Property(e => e.GameId).IsRequired();
+
+            builder.Property(e => e.GameName).IsRequired();
+
+            builder.Property(e => e.GameGenre).IsRequired();
+
+            builder.Property(e => e.Quantity).IsRequired();
 
             builder.Property(e => e.UnitPrice).HasPrecision(18, 2);
 
-            builder.HasOne(e => e.Game)
-                .WithMany()
-                .HasForeignKey(e => e.GameId);
+            builder.HasOne(e => e.Cart)
+                .WithMany(e => e.Items)
+                .HasForeignKey(e => e.CartId);
+
+            //builder.HasOne(e => e.Game)
+            //    .WithMany()
+            //    .HasForeignKey(e => e.GameId);
         }
     }
 }

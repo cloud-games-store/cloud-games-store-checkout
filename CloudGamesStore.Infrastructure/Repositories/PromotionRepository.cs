@@ -223,7 +223,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             var genreRule = promotion.Rules.FirstOrDefault(r => r.Type == PromotionRuleType.Genre);
             if (genreRule == null) return false;
 
-            return cartItems.Any(item => item.Game.Genre.Equals(genreRule.Value, StringComparison.OrdinalIgnoreCase));
+            return cartItems.Any(item => item.GameGenre.Equals(genreRule.Value, StringComparison.OrdinalIgnoreCase));
         }
 
         private async Task<bool> IsBundleDiscountApplicableAsync(Promotion promotion, List<CartItem> cartItems)

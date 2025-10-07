@@ -135,7 +135,7 @@ namespace CloudGamesStore.Application.Services
             var genreRule = promotion.Rules.FirstOrDefault(r => r.Type == PromotionRuleType.Genre);
             if (genreRule == null) return null;
 
-            var applicableItems = items.Where(i => i.Game.Genre == genreRule.Value).ToList();
+            var applicableItems = items.Where(i => i.GameGenre == genreRule.Value).ToList();
             if (applicableItems.Any())
             {
                 var applicableAmount = applicableItems.Sum(i => i.UnitPrice * i.Quantity);
@@ -163,7 +163,7 @@ namespace CloudGamesStore.Application.Services
             {
                 var applicableItems = items.Where(item =>
                     coupon.ApplicableGameIds.Contains(item.GameId) ||
-                    coupon.ApplicableGenres.Contains(item.Game.Genre)).ToList();
+                    coupon.ApplicableGenres.Contains(item.GameGenre)).ToList();
 
                 applicableAmount = applicableItems.Sum(i => i.UnitPrice * i.Quantity);
             }

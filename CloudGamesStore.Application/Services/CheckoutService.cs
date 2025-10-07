@@ -141,7 +141,7 @@ namespace CloudGamesStore.Application.Services
                 AppliedDiscounts = automaticDiscounts.Concat(couponDiscounts).ToList(),
                 Items = cart.Items.Select(item => new OrderItemDto
                 {
-                    GameName = item.Game.Name,
+                    GameName = item.GameName,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.UnitPrice * item.Quantity
@@ -207,7 +207,6 @@ namespace CloudGamesStore.Application.Services
                 Items = cart.Items.Select(item => new OrderItem
                 {
                     GameId = item.GameId,
-                    Game = item.Game,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.UnitPrice * item.Quantity
