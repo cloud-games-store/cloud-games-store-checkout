@@ -10,6 +10,6 @@ namespace CloudGamesStore.Application.Interfaces
     public interface ICheckoutService
     {
         Task<CheckoutResponse> ProcessCheckoutAsync(CheckoutRequest request);
-        Task<OrderSummary> CalculateOrderSummaryAsync(int userId, List<string> couponCodes);
+        Task<OrderSummary> CalculateOrderSummaryAsync(Guid userId, List<string> couponCodes);
     }
 }

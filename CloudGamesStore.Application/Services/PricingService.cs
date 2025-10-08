@@ -59,7 +59,7 @@ namespace CloudGamesStore.Application.Services
             return discounts;
         }
 
-        public async Task<decimal> CalculateTaxAsync(decimal amount, int userId)
+        public async Task<decimal> CalculateTaxAsync(decimal amount, Guid userId)
         {
             // Consider user's location and applicable tax rates
             return Math.Round(amount * TAX_RATE, 2);

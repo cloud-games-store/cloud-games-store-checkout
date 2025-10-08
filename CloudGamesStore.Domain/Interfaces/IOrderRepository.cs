@@ -10,7 +10,7 @@ namespace CloudGamesStore.Domain.Interfaces
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<List<Order>> GetByUserIdAsync(int userId);
+        Task<List<Order>> GetByUserIdAsync(Guid userId);
         Task<Order?> GetByOrderNumberAsync(string orderNumber);
         Task<List<Order>> GetOrdersByStatusAsync(OrderStatus status);
         Task<List<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);

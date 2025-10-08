@@ -1,13 +1,12 @@
 ﻿using CloudGamesStore.Application.DTOs.CartDtos;
 using CloudGamesStore.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGamesStore.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class CartController : Controller
     {
@@ -22,7 +21,7 @@ namespace CloudGamesStore.Api.Controllers
         }
 
         [HttpPost("AddItem")]
-        public async Task<ActionResult<CartItemDto>> AddItemToCartAsync(int userId,
+        public async Task<ActionResult<CartItemDto>> AddItemToCartAsync(Guid userId,
             int gameId, int quantity = 1)
         {
             try
@@ -39,7 +38,7 @@ namespace CloudGamesStore.Api.Controllers
         }
 
         [HttpDelete("RemoveItem")]
-        public async Task<ActionResult> RemoveItemFromCartAsync(int userId,
+        public async Task<ActionResult> RemoveItemFromCartAsync(Guid userId,
             int gameId)
         {
             try
@@ -56,7 +55,7 @@ namespace CloudGamesStore.Api.Controllers
         }
 
         [HttpPost("UpdateItem")]
-        public async Task<ActionResult<CartItemDto>> UpdateItemQuantityAsync(int userId,
+        public async Task<ActionResult<CartItemDto>> UpdateItemQuantityAsync(Guid userId,
             int gameId, int newQuantity)
         {
             try
@@ -69,6 +68,22 @@ namespace CloudGamesStore.Api.Controllers
             {
                 _logger.LogError(ex, "Error while updating an item quantity from the cart for user {UserId}", userId);
                 return StatusCode(500, "An error occurred while updating an item quantity from the cart");
+            }
+        }
+
+        [HttpDelete("ClearCart")]
+        public async Task<ActionResult> ClearCart(Guid userId)
+        {
+            try
+            {
+                await _cartService.ClearCart(userId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while clearing cart {cartId}", userId);
+                return StatusCode(500, "An error occurred while clearing the cart");
             }
         }
     }

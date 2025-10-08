@@ -9,10 +9,11 @@ namespace CloudGamesStore.Application.Interfaces
 {
     public interface ICartService
     {
-        Task<CartDto> GetCartByUserIdAsync(int userId);
-        Task DeleteCartByUserIdAsync(int userId);
-        Task AddItemCartByUserIdAsync(int userId, int gameId, int quantity = 1);
-        Task RemoveItemFromCartAsync(int userId, int gameId);
-        Task UpdateItemQuantityAsync(int userId, int gameId, int newQuantity);
+        Task<CartDto> GetCartByUserIdAsync(Guid userId);
+        Task DeleteCartByUserIdAsync(Guid userId);
+        Task AddItemCartByUserIdAsync(Guid userId, int gameId, int quantity = 1);
+        Task RemoveItemFromCartAsync(Guid userId, int gameId);
+        Task UpdateItemQuantityAsync(Guid userId, int gameId, int newQuantity);
+        Task ClearCart(Guid userId);
     }
 }

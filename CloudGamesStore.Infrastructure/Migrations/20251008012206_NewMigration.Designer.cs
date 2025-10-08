@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloudGamesStore.Infrastructure.Migrations
 {
     [DbContext(typeof(GameStoreCheckoutDbContext))]
-    [Migration("20250922012855_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20251008012206_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,8 @@ namespace CloudGamesStore.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -61,8 +61,16 @@ namespace CloudGamesStore.Infrastructure.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
+                    b.Property<string>("GameGenre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("GameId")
                         .HasColumnType("int");
+
+                    b.Property<string>("GameName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -74,8 +82,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("GameId");
 
                     b.ToTable("CartItems");
                 });
@@ -221,8 +227,8 @@ namespace CloudGamesStore.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -260,8 +266,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GameId");
 
                     b.HasIndex("OrderId");
 
@@ -339,36 +343,22 @@ namespace CloudGamesStore.Infrastructure.Migrations
 
             modelBuilder.Entity("CloudGamesStore.Domain.Entities.CartItem", b =>
                 {
-                    b.HasOne("CloudGamesStore.Domain.Entities.Cart", null)
+                    b.HasOne("CloudGamesStore.Domain.Entities.Cart", "Cart")
                         .WithMany("Items")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CloudGamesStore.Domain.Entities.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
+                    b.Navigation("Cart");
                 });
 
             modelBuilder.Entity("CloudGamesStore.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("CloudGamesStore.Domain.Entities.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CloudGamesStore.Domain.Entities.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("CloudGamesStore.Domain.Entities.PromotionRule", b =>

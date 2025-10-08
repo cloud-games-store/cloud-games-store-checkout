@@ -1,4 +1,6 @@
-﻿using CloudGamesStore.Domain.Interfaces;
+﻿using CloudGamesStore.Application.Interfaces;
+using CloudGamesStore.Domain.Interfaces;
+using CloudGamesStore.Infrastructure.Client;
 using CloudGamesStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -13,6 +15,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
         private IDbContextTransaction? _transaction;
 
         //private IGameRepository? _games;
+        private IGameServiceClient _gameServiceClient;
         private ICartRepository? _carts;
         private IOrderRepository? _orders;
         private ICouponRepository? _coupons;
@@ -22,6 +25,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             GameStoreCheckoutDbContext context,
             ILogger<UnitOfWork> logger,
             //ILogger<GameRepository> gameLogger,
+            ILogger<GameServiceClient> gameLogger,
             ILogger<CartRepository> cartLogger,
             ILogger<OrderRepository> orderLogger,
             ILogger<CouponRepository> couponLogger,
@@ -31,8 +35,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             _logger = logger;
 
             // Initialize repositories with their specific loggers
-            //_games = new GameRepository(_context, gameLogger);
-            _carts = new CartRepository(_context, cartLogger);
+            _carts = new CartRepository(_context, cartLogger, _gameServiceClient);
             _orders = new OrderRepository(_context, orderLogger);
             _coupons = new CouponRepository(_context, couponLogger);
             _promotions = new PromotionRepository(_context, promotionLogger);
@@ -42,7 +45,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
         //    _context.GetService<ILogger<GameRepository>>());
 
         public ICartRepository Carts => _carts ??= new CartRepository(_context,
-            _context.GetService<ILogger<CartRepository>>());
+            _context.GetService<ILogger<CartRepository>>(), _gameServiceClient);
 
         public IOrderRepository Orders => _orders ??= new OrderRepository(_context,
             _context.GetService<ILogger<OrderRepository>>());

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CloudGamesStore.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class CheckoutController : Controller
     {
@@ -48,7 +48,7 @@ namespace CloudGamesStore.Api.Controllers
 
         [HttpGet("summary/{userId}")]
         public async Task<ActionResult<OrderSummary>> GetOrderSummary(
-            int userId,
+            Guid userId,
             [FromQuery] List<string> couponCodes)
         {
             try
