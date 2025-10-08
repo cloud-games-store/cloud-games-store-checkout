@@ -1,6 +1,7 @@
 using CloudGamesStore.Application.Interfaces;
 using CloudGamesStore.Application.Services;
 using CloudGamesStore.Domain.Interfaces;
+using CloudGamesStore.Infrastructure.Client;
 using CloudGamesStore.Infrastructure.Data;
 using CloudGamesStore.Infrastructure.Repositories;
 using CloudGamesStore.Infrastructure.Services;
@@ -44,6 +45,12 @@ builder.Services.AddScoped<ICheckoutService, CheckoutService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+//builder.Services.AddScoped<IGameServiceClient, GameServiceClient>();
+
+builder.Services.AddHttpClient<IGameServiceClient, GameServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:GameService"]);
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
