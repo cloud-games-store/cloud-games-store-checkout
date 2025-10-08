@@ -23,27 +23,32 @@ namespace CloudGamesStore.Application.Services
             _cartRepository = cartRepository;
         }
 
-        public async Task AddItemCartByUserIdAsync(int userId, int gameId, int quantity = 1)
+        public async Task AddItemCartByUserIdAsync(Guid userId, int gameId, int quantity = 1)
         {
             await _cartRepository.AddItemToCartAsync(userId, gameId, quantity);
         }
 
-        public async Task RemoveItemFromCartAsync(int userId, int gameId)
+        public async Task RemoveItemFromCartAsync(Guid userId, int gameId)
         {
             await _cartRepository.RemoveItemFromCartAsync(userId, gameId);
         }
 
-        public async Task UpdateItemQuantityAsync(int userId, int gameId, int newQuantity)
+        public async Task UpdateItemQuantityAsync(Guid userId, int gameId, int newQuantity)
         {
             await _cartRepository.UpdateItemQuantityAsync(userId, gameId, newQuantity);
         }
 
-        public Task DeleteCartByUserIdAsync(int userId)
+        public async Task ClearCart(Guid userId)
+        {
+            await _cartRepository.ClearCartAsync(userId);
+        }
+
+        public Task DeleteCartByUserIdAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CartDto> GetCartByUserIdAsync(int userId)
+        public Task<CartDto> GetCartByUserIdAsync(Guid userId)
         {
             throw new NotImplementedException();
         }

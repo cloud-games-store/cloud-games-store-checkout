@@ -30,7 +30,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<List<Order>> GetByUserIdAsync(int userId)
+        public async Task<List<Order>> GetByUserIdAsync(Guid userId)
         {
             try
             {

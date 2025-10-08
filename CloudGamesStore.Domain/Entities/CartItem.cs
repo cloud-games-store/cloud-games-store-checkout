@@ -12,7 +12,6 @@ namespace CloudGamesStore.Domain.Entities
         public int CartId { get; set; }
         public Cart Cart { get; set; }
         public int GameId { get; set; }
-        //public Game Game { get; set; } = null!;
         public string GameName { get; set; }
         public string GameGenre { get; set; }
         public int Quantity { get; set; } = 1;
