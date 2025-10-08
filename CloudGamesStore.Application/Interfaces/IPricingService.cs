@@ -13,6 +13,6 @@ namespace CloudGamesStore.Application.Interfaces
         Task<List<AppliedDiscount>> CalculateAutomaticDiscountsAsync(List<CartItem> items);
         Task<List<AppliedDiscount>> CalculateCouponDiscountsAsync(
             List<CartItem> items, List<string> couponCodes, decimal subTotal);
-        Task<decimal> CalculateTaxAsync(decimal amount, int userId);
+        Task<decimal> CalculateTaxAsync(decimal amount, Guid userId);
     }
 }

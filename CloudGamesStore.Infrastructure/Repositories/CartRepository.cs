@@ -34,7 +34,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<Cart?> GetByUserIdAsync(int userId)
+        public async Task<Cart?> GetByUserIdAsync(Guid userId)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<Cart> GetOrCreateCartForUserAsync(int userId)
+        public async Task<Cart> GetOrCreateCartForUserAsync(Guid userId)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task AddItemToCartAsync(int userId, int gameId, int quantity = 1)
+        public async Task AddItemToCartAsync(Guid userId, int gameId, int quantity = 1)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task RemoveItemFromCartAsync(int userId, int gameId)
+        public async Task RemoveItemFromCartAsync(Guid userId, int gameId)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateItemQuantityAsync(int userId, int gameId, int newQuantity)
+        public async Task UpdateItemQuantityAsync(Guid userId, int gameId, int newQuantity)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task ClearCartAsync(int userId)
+        public async Task ClearCartAsync(Guid userId)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<int> GetCartItemCountAsync(int userId)
+        public async Task<int> GetCartItemCountAsync(Guid userId)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<decimal> GetCartTotalAsync(int userId)
+        public async Task<decimal> GetCartTotalAsync(Guid userId)
         {
             try
             {
@@ -217,7 +217,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
-        public async Task<bool> IsGameInCartAsync(int userId, int gameId)
+        public async Task<bool> IsGameInCartAsync(Guid userId, int gameId)
         {
             try
             {
@@ -229,11 +229,6 @@ namespace CloudGamesStore.Infrastructure.Repositories
                 _logger.LogError(ex, "Error checking if game {GameId} is in cart for user {UserId}", gameId, userId);
                 throw;
             }
-        }
-
-        public async Task<GameGenreDto> TestGame(string id)
-        {
-            return await _gameServiceClient.GetGamesByIdsAsync(id);
         }
     }
 }

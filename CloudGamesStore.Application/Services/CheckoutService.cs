@@ -110,7 +110,7 @@ namespace CloudGamesStore.Application.Services
             }
         }
 
-        public async Task<OrderSummary> CalculateOrderSummaryAsync(int userId, List<string> couponCodes)
+        public async Task<OrderSummary> CalculateOrderSummaryAsync(Guid userId, List<string> couponCodes)
         {
             var cart = await _cartRepository.GetByUserIdAsync(userId);
             if (cart == null || !cart.Items.Any())

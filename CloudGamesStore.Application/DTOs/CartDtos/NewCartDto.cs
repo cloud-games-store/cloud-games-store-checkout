@@ -9,7 +9,7 @@ namespace CloudGamesStore.Application.DTOs.CartDtos
 {
     public class NewCartDto
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public List<NewCartItemDto> Items { get; set; } = new();
         public DateTime CreatedAt { get; set; }
     }

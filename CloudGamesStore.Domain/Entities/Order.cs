@@ -10,7 +10,7 @@ namespace CloudGamesStore.Domain.Entities
     public class Order
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public string OrderNumber { get; set; } = string.Empty;
         public List<OrderItem> Items { get; set; } = new();
         public decimal SubTotal { get; set; }

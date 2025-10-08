@@ -9,14 +9,14 @@ namespace CloudGamesStore.Domain.Interfaces
 {
     public interface ICartRepository : IRepository<Cart>
     {
-        Task<Cart?> GetByUserIdAsync(int userId);
-        Task<Cart> GetOrCreateCartForUserAsync(int userId);
-        Task AddItemToCartAsync(int userId, int gameId, int quantity = 1);
-        Task RemoveItemFromCartAsync(int userId, int gameId);
-        Task UpdateItemQuantityAsync(int userId, int gameId, int newQuantity);
-        Task ClearCartAsync(int userId);
-        Task<int> GetCartItemCountAsync(int userId);
-        Task<decimal> GetCartTotalAsync(int userId);
-        Task<bool> IsGameInCartAsync(int userId, int gameId);
+        Task<Cart?> GetByUserIdAsync(Guid userId);
+        Task<Cart> GetOrCreateCartForUserAsync(Guid userId);
+        Task AddItemToCartAsync(Guid userId, int gameId, int quantity = 1);
+        Task RemoveItemFromCartAsync(Guid userId, int gameId);
+        Task UpdateItemQuantityAsync(Guid userId, int gameId, int newQuantity);
+        Task ClearCartAsync(Guid userId);
+        Task<int> GetCartItemCountAsync(Guid userId);
+        Task<decimal> GetCartTotalAsync(Guid userId);
+        Task<bool> IsGameInCartAsync(Guid userId, int gameId);
     }
 }
