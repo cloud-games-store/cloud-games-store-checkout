@@ -1,14 +1,12 @@
 ﻿using CloudGamesStore.Application.DTOs.CartDtos;
 using CloudGamesStore.Application.Interfaces;
-using CloudGamesStore.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGamesStore.Api.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class CartController : Controller
     {

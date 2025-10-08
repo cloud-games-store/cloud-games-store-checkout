@@ -264,8 +264,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameId");
-
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
@@ -353,19 +351,11 @@ namespace CloudGamesStore.Infrastructure.Migrations
 
             modelBuilder.Entity("CloudGamesStore.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("CloudGamesStore.Domain.Entities.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CloudGamesStore.Domain.Entities.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("CloudGamesStore.Domain.Entities.PromotionRule", b =>
