@@ -149,12 +149,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
@@ -207,11 +201,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
                 column: "Genre");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_GameId",
-                table: "OrderItems",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -243,6 +232,9 @@ namespace CloudGamesStore.Infrastructure.Migrations
                 name: "Coupons");
 
             migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
@@ -250,9 +242,6 @@ namespace CloudGamesStore.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Carts");
-
-            migrationBuilder.DropTable(
-                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Orders");

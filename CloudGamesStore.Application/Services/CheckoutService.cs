@@ -56,15 +56,17 @@ namespace CloudGamesStore.Application.Services
                 var orderSummary = await CalculateOrderSummaryAsync(request.UserId, request.CouponCodes);
 
                 // Validate coupons
-                var validationResult = await ValidateCouponsAsync(request.CouponCodes, orderSummary.SubTotal);
-                if (!validationResult.IsValid)
-                {
-                    return new CheckoutResponse
-                    {
-                        Success = false,
-                        Errors = validationResult.Errors
-                    };
-                }
+                // TODO: The coupons are correctely validated but the Swagger usage is confusing
+                // so coupons will not be validated in the current phase of our project.
+                //var validationResult = await ValidateCouponsAsync(request.CouponCodes, orderSummary.SubTotal);
+                //if (!validationResult.IsValid)
+                //{
+                //    return new CheckoutResponse
+                //    {
+                //        Success = false,
+                //        Errors = validationResult.Errors
+                //    };
+                //}
 
                 // Process payment
                 var paymentResult = await _paymentService.ProcessPaymentAsync(

@@ -20,7 +20,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .FirstOrDefaultAsync(o => o.Id == id);
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .Where(o => o.UserId == userId)
                     .OrderByDescending(o => o.CreatedAt)
                     .ToListAsync();
@@ -54,7 +54,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber);
             }
             catch (Exception ex)
@@ -70,7 +70,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .Where(o => o.Status == status)
                     .OrderByDescending(o => o.CreatedAt)
                     .ToListAsync();
@@ -88,7 +88,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .Where(o => o.CreatedAt >= startDate && o.CreatedAt <= endDate)
                     .OrderByDescending(o => o.CreatedAt)
                     .ToListAsync();
@@ -106,7 +106,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
             {
                 return await _dbSet
                     .Include(o => o.Items)
-                        .ThenInclude(i => i.Game)
+                        //.ThenInclude(i => i.Game)
                     .OrderByDescending(o => o.CreatedAt)
                     .Take(count)
                     .ToListAsync();
