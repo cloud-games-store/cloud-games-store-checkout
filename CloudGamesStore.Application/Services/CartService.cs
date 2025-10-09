@@ -43,12 +43,14 @@ namespace CloudGamesStore.Application.Services
             await _cartRepository.ClearCartAsync(userId);
         }
 
-        public Task DeleteCartByUserIdAsync(Guid userId)
+        public async Task<CartDto> GetCartByUserIdAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            var cart = await _cartRepository.GetCartForUserAsync(userId);
+
+            return CartDto.ToCartDto(cart);
         }
 
-        public Task<CartDto> GetCartByUserIdAsync(Guid userId)
+        public Task DeleteCartByUserIdAsync(Guid userId)
         {
             throw new NotImplementedException();
         }

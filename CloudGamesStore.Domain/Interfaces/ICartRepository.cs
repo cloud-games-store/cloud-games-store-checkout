@@ -11,6 +11,7 @@ namespace CloudGamesStore.Domain.Interfaces
     {
         Task<Cart?> GetByUserIdAsync(Guid userId);
         Task<Cart> GetOrCreateCartForUserAsync(Guid userId);
+        Task<Cart> GetCartForUserAsync(Guid userId);
         Task AddItemToCartAsync(Guid userId, int gameId, int quantity = 1);
         Task RemoveItemFromCartAsync(Guid userId, int gameId);
         Task UpdateItemQuantityAsync(Guid userId, int gameId, int newQuantity);

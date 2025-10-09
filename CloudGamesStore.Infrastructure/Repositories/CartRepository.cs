@@ -75,6 +75,24 @@ namespace CloudGamesStore.Infrastructure.Repositories
             }
         }
 
+        public async Task<Cart> GetCartForUserAsync(Guid userId)
+        {
+            try
+            {
+                var cart = await GetByUserIdAsync(userId);
+                if (cart == null)
+                {
+                    throw new InvalidOperationException($"Cart not found for userId {userId}");
+                }
+                return cart;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting or creating cart for user {UserId}", userId);
+                throw;
+            }
+        }
+
         public async Task AddItemToCartAsync(Guid userId, int gameId, int quantity = 1)
         {
             try
@@ -89,8 +107,7 @@ namespace CloudGamesStore.Infrastructure.Repositories
                 }
                 else
                 {
-                    // TODO: Check if the game exists in the Game microservice.
-                    var game = await _gameServiceClient.GetGamesByIdsAsync(gameId.ToString()); //_context.Games.FindAsync(gameId);
+                    var game = await _gameServiceClient.GetGamesByIdsAsync(gameId.ToString());
                     if (game == null || !game.IsActive)
                         throw new InvalidOperationException($"Game with ID {gameId} not found or inactive");
 
