@@ -2,11 +2,11 @@
 using CloudGamesStore.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CloudGamesStore.Api.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
     public class CartController : Controller
     {
@@ -18,6 +18,34 @@ namespace CloudGamesStore.Api.Controllers
         {
             _cartService = cartService;
             _logger = logger;
+        }
+
+        [HttpGet("GetCart")]
+        public async Task<ActionResult<CartItemDto>> GetCart()
+        {
+            try
+            {
+                var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+                Guid userId = Guid.Empty;
+
+                if (claim != null)
+                {
+                    if (Guid.TryParse(claim.Value, out Guid tokenUserId))
+                    {
+                        userId = tokenUserId;
+                    }
+                }
+
+                var cart = await _cartService.GetCartByUserIdAsync(userId);
+
+                return Ok(cart);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting cart");
+                return StatusCode(500, "An error occurred while getting the cart");
+            }
+            throw new NotImplementedException();
         }
 
         [HttpPost("AddItem")]

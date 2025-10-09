@@ -1,6 +1,9 @@
 ﻿using CloudGamesStore.Application.DTOs;
 using CloudGamesStore.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
 
 namespace CloudGamesStore.Infrastructure.Services
 {
@@ -8,11 +11,13 @@ namespace CloudGamesStore.Infrastructure.Services
     {
         private readonly ILogger<PaymentService> _logger;
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public PaymentService(ILogger<PaymentService> logger, HttpClient httpClient)
+        public PaymentService(ILogger<PaymentService> logger, HttpClient httpClient, IConfiguration configuration)
         {
             _logger = logger;
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<PaymentResult> ProcessPaymentAsync(PaymentDetails paymentDetails, decimal amount)
@@ -21,41 +26,32 @@ namespace CloudGamesStore.Infrastructure.Services
             {
                 _logger.LogInformation("Processing payment of {Amount} using {Method}", amount, paymentDetails.Method);
 
-                // In a real implementation, this would integrate with actual payment processors
-                // like Stripe, PayPal, Square, etc.
+                string url = _configuration["PaymentFunction:Url"];
 
-                // Simulate payment processing
-                await Task.Delay(1000); // Simulate network call
-
-                // Mock validation
-                if (string.IsNullOrEmpty(paymentDetails.Token))
+                var request = new
                 {
-                    return new PaymentResult
-                    {
-                        Success = false,
-                        ErrorMessage = "Payment token is required"
-                    };
-                }
-
-                if (amount <= 0)
-                {
-                    return new PaymentResult
-                    {
-                        Success = false,
-                        ErrorMessage = "Invalid payment amount"
-                    };
-                }
-
-                // Simulate successful payment
-                var transactionId = Guid.NewGuid().ToString();
-
-                _logger.LogInformation("Payment processed successfully. TransactionId: {TransactionId}", transactionId);
-
-                return new PaymentResult
-                {
-                    Success = true,
-                    TransactionId = transactionId
+                    TransactionId = Guid.NewGuid().ToString(),
+                    Payment = paymentDetails,
+                    TotalAmount = amount,
                 };
+
+                string json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Requisição POST Function App
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+
+                // Resposta Function App
+                string result = await response.Content.ReadAsStringAsync();
+
+                PaymentResult? paymentResult = JsonSerializer.Deserialize<PaymentResult>(result) ?? null;
+
+                if (paymentResult == null)
+                    throw new Exception("Error while Processing Payment.");
+
+                _logger.LogInformation(paymentResult.Success ? $"Payment processed successfully. TransactionId: {paymentResult.TransactionId}" : paymentResult.ErrorMessage);
+
+                return paymentResult;
             }
             catch (Exception ex)
             {
