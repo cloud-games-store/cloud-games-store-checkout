@@ -1,5 +1,6 @@
 ﻿using CloudGamesStore.Application.DTOs.GameDtos;
 using CloudGamesStore.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CloudGamesStore.Api.Controllers
