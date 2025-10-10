@@ -11,5 +11,6 @@ namespace CloudGamesStore.Application.Interfaces
     public interface IOrderService
     {
         Task<OrderDto> GetByOrderNumberAsync(string orderNumber);
+        Task<List<OrderDto>> GetOrdersForUser(Guid userId);
     }
 }
