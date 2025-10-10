@@ -151,6 +151,17 @@ builder.Services.AddHostedService<OrderProcessingBackgroundService>();
 
 var app = builder.Build();
 
+#region Apply Migrations
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+using var context = services.GetRequiredService<GameStoreCheckoutDbContext>();
+
+context.Database.Migrate();
+
+#endregion
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
