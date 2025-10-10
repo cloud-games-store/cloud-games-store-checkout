@@ -32,11 +32,12 @@ namespace CloudGamesStore.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<OrderDto>>> GetOrders()
         {
             try
             {
-                var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+                var claim = User.FindFirst(ClaimTypes.Name);
                 Guid userId = Guid.Empty;
 
                 if (claim != null)

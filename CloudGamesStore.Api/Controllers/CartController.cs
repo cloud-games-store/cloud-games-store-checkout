@@ -21,11 +21,12 @@ namespace CloudGamesStore.Api.Controllers
         }
 
         [HttpGet("GetCart")]
+        [Authorize]
         public async Task<ActionResult<CartItemDto>> GetCart()
         {
             try
             {
-                var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+                var claim = User.FindFirst(ClaimTypes.Name);
                 Guid userId = Guid.Empty;
 
                 if (claim != null)
