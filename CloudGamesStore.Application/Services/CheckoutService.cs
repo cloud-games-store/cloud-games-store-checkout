@@ -209,6 +209,7 @@ namespace CloudGamesStore.Application.Services
                 Items = cart.Items.Select(item => new OrderItem
                 {
                     GameId = item.GameId,
+                    GameName = item.GameName,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.UnitPrice * item.Quantity

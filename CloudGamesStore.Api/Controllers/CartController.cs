@@ -36,6 +36,9 @@ namespace CloudGamesStore.Api.Controllers
                     }
                 }
 
+                if (userId == Guid.Empty)
+                    return NotFound("There is not a valid user logged in");
+
                 var cart = await _cartService.GetCartByUserIdAsync(userId);
 
                 return Ok(cart);
@@ -45,7 +48,6 @@ namespace CloudGamesStore.Api.Controllers
                 _logger.LogError(ex, "Error while getting cart");
                 return StatusCode(500, "An error occurred while getting the cart");
             }
-            throw new NotImplementedException();
         }
 
         [HttpPost("AddItem")]
