@@ -32,5 +32,16 @@ namespace CloudGamesStore.Application.Services
 
             return result;
         }
+
+        public async Task<List<OrderDto>> GetOrdersForUser(Guid userId)
+        {
+            var order = await _orderRepository.GetByUserIdAsync(userId);
+            List<OrderDto> result = [];
+
+            if (order != null)
+                result = order.Select(o => OrderDto.ToOrderDto(o)).ToList();
+
+            return result;
+        }
     }
 }
