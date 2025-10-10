@@ -4,6 +4,7 @@ using CloudGamesStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CloudGamesStore.Infrastructure.Migrations
 {
     [DbContext(typeof(GameStoreCheckoutDbContext))]
-    partial class GameStoreCheckoutDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251010033139_AddingGameNameToOrder")]
+    partial class AddingGameNameToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
