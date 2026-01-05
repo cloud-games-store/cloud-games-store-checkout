@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: deployment-checkout
+    namespace: checkout
+spec:
+    selector:
+        matchLabels:
+            app: pod-checkout
+    template:
+        metadata:
+            labels:
+                app: pod-checkout
+        spec:
+            containers:
+                - name: fiapcloudgames-checkout
+                  image:  checkout-api:local
+                  imagePullPolicy: Always
+                  ports:
+                    - containerPort: 8080 # Porta que a aplicação .NET está ouvindo
+                  startupProbe:
+                    httpGet:
+                        path: /health/live
+                        port: 8080
+                    failureThreshold: 30
+                    periodSeconds: 10
+                  livenessProbe:
+                    httpGet:
+                        path: /health/live
+                        port: 8080
+                    initialDelaySeconds: 10
+                    periodSeconds: 30
+                  readinessProbe:
+                    httpGet:
+                        path: /health/ready
+                        port: 8080
+                    initialDelaySeconds: 10
+                    periodSeconds: 5
+                  resources:
+                    requests: # O mínimo garantido 
+                        cpu: "200m"
+                        memory: "128Mi"
+                    limits: # O máximo suportado no Pod
+                        cpu: "500m"
+                        memory: "512Mi"
+                  env:
+                    - name: Jwt__Key
+                      valueFrom:
+                        secretKeyRef:
+                            name: secret-checkout
+                            key: Jwt__Key
+                    
+                    - name: Jwt__Issuer
+                      valueFrom:
+                        secretKeyRef:
+                            name: secret-checkout
+                            key: Jwt__Issuer
+                    - name: ConnectionStrings__DbConnection
+                      valueFrom:
+                        secretKeyRef:
+                            name: secret-checkout
+                            key: ConnectionStrings__DbConnection
+                    - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+                      valueFrom:
+                        secretKeyRef:
+                            name: secret-checkout
+                            key: APPLICATIONINSIGHTS_CONNECTION_STRING
