@@ -37,8 +37,8 @@ spec:
                         secretKeyRef:
                             name: secret-checkout
                             key: Jwt__Issuer
-                    - name: ConnectionStrings__DbConnection
+                    - name: ConnectionStrings__DefaultConnection
                       valueFrom:
                         secretKeyRef:
                             name: secret-checkout
-                            key: ConnectionStrings__DbConnection
+                            key: ConnectionStrings__DefaultConnection

@@ -27,3 +27,4 @@ spec:
               value: "Y"
             - name: MSSQL_SA_PASSWORD
               value: "password@1"
+              
