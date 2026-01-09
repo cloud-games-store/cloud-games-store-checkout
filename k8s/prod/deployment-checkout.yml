@@ -68,5 +68,5 @@ spec:
                     - name: RabbitMq__Host
                       valueFrom:
                         secretKeyRef:
-                            name: secret-games
+                            name: secret-checkout
                             key: RabbitMq__Host
