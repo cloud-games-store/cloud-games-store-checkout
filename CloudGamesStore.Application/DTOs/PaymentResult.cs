@@ -3,7 +3,7 @@
     public class PaymentResult
     {
         public bool Success { get; set; }
-        public string? TransactionId { get; set; }
+        public Guid? TransactionId { get; set; }
         public string? ErrorMessage { get; set; }
     }
 }
