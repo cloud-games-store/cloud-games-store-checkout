@@ -42,12 +42,51 @@ jobs:
       - name: 📥 Checkout do código
         uses: actions/checkout@v3
 
-      - name: 🐳 Build da imagem Docker
-        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/checkout-api:latest .
-
       - name: 🔑 Login no Azure Container Registry
         run: |
           echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
+      - name: 🐳 Build da imagem Docker
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/checkout-api:${{ github.sha }} .
+
       - name: 🚀 Push da imagem para o ACR
-        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/checkout-api:latest
+        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/checkout-api:${{ github.sha }}
+
+  push-to-aks:
+    needs: push-to-acr
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v3
+        
+      - name: 🔑 Login no Azure Kubernetes 
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          
+      - name: 🔍 Validar conexão com o cluster
+        run: kubectl get nodes
+      
+      - name: 🔐 Aplicar secrets
+        run: |
+          kubectl create secret generic secret-checkout \
+          -n checkout \
+          --from-literal=Jwt__Key="${{ secrets.JWT_KEY }}" \
+          --from-literal=Jwt__Issuer="${{ secrets.JWT_ISSUER }}" \
+          --from-literal=ConnectionStrings__DefaultConnection="${{ secrets.DB_CONNECTION }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+      
+      - name: 🚀 Deploy no AKS
+        run: |
+          kubectl apply -f k8s/prod/svc-checkout.yml
+          kubectl apply -f k8s/prod/deployment-checkout.yml
+          kubectl set image deployment/deployment-checkout \
+            fiapcloudgames-checkout=${{ secrets.ACR_LOGIN_SERVER }}/checkout-api:${{ github.sha }} \
+            -n checkout
+          kubectl apply -f k8s/prod/hpa-checkout.yml
+
+      - name: ⏱️ Aguardar rollout
+        run: kubectl rollout status deployment/deployment-checkout -n checkout

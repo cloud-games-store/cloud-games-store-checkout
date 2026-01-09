@@ -7,8 +7,10 @@ using CloudGamesStore.Infrastructure.Repositories;
 using CloudGamesStore.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -75,6 +77,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddApplicationInsightsTelemetry();
 //builder.Services.AddScoped<IGameServiceClient, GameServiceClient>();
 
 // IMPORTANT: This is necessary to evoke the Games service.
@@ -149,6 +152,16 @@ builder.Services.AddHostedService<OrderProcessingBackgroundService>();
 //    .WriteTo.Console()
 //    .WriteTo.File("logs/gamestore-.txt", rollingInterval: RollingInterval.Day));
 
+#region Health Check
+
+builder.Services.AddHealthChecks().AddSqlServer(
+    builder.Configuration.GetConnectionString("DefaultConnection")!,
+    name: "sqlserver",
+    failureStatus: HealthStatus.Unhealthy,
+    timeout: TimeSpan.FromSeconds(5)
+);
+#endregion
+
 var app = builder.Build();
 
 #region Apply Migrations
@@ -162,11 +175,25 @@ context.Database.Migrate();
 
 #endregion
 
+#region Health Check Endpoints
+
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
+
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Name == "sqlserver"
+});
+#endregion
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FIAP Cloud Games - Checkout V1");
+});
 
 app.UseAuthentication();
 
