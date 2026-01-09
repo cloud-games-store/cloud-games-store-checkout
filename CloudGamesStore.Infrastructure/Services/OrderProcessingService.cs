@@ -24,7 +24,12 @@ namespace CloudGamesStore.Infrastructure.Services
 
         public async Task ProcessPendingOrdersAsync(object message, string queueName)
         {
-            var factory = new ConnectionFactory { HostName = _configuration["RabbitMq:Host"] };
+            var connectionString = _configuration["RabbitMq:Host"]; 
+
+            var factory = new ConnectionFactory
+            {
+                Uri = new Uri(connectionString)
+            };
 
             await using var connection = await factory.CreateConnectionAsync();
             await using var channel = await connection.CreateChannelAsync();
