@@ -77,6 +77,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddApplicationInsightsTelemetry();
 //builder.Services.AddScoped<IGameServiceClient, GameServiceClient>();
 
 // IMPORTANT: This is necessary to evoke the Games service.
@@ -154,7 +155,7 @@ builder.Services.AddHostedService<OrderProcessingBackgroundService>();
 #region Health Check
 
 builder.Services.AddHealthChecks().AddSqlServer(
-    builder.Configuration.GetConnectionString("DbConnection")!,
+    builder.Configuration.GetConnectionString("DefaultConnection")!,
     name: "sqlserver",
     failureStatus: HealthStatus.Unhealthy,
     timeout: TimeSpan.FromSeconds(5)
