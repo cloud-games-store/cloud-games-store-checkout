@@ -12,12 +12,14 @@ namespace CloudGamesStore.Infrastructure.Services
         private readonly ILogger<PaymentService> _logger;
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly IOrderProcessingService _orderProcessingService;
 
-        public PaymentService(ILogger<PaymentService> logger, HttpClient httpClient, IConfiguration configuration)
+        public PaymentService(ILogger<PaymentService> logger, HttpClient httpClient, IConfiguration configuration, IOrderProcessingService orderProcessingService)
         {
             _logger = logger;
             _httpClient = httpClient;
             _configuration = configuration;
+            _orderProcessingService = orderProcessingService;
         }
 
         public async Task<PaymentResult> ProcessPaymentAsync(PaymentDetails paymentDetails, decimal amount)
@@ -26,30 +28,24 @@ namespace CloudGamesStore.Infrastructure.Services
             {
                 _logger.LogInformation("Processing payment of {Amount} using {Method}", amount, paymentDetails.Method);
 
-                string url = _configuration["PaymentFunction:Url"];
-
                 var request = new
                 {
-                    TransactionId = Guid.NewGuid().ToString(),
+                    TransactionId = Guid.NewGuid(),
                     Payment = paymentDetails,
                     TotalAmount = amount,
                 };
 
-                string json = JsonSerializer.Serialize(request);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
                 // Requisição POST Function App
-                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-
-                // Resposta Function App
-                string result = await response.Content.ReadAsStringAsync();
-
-                PaymentResult? paymentResult = JsonSerializer.Deserialize<PaymentResult>(result) ?? null;
+                var paymentResult = await Payment(request);
 
                 if (paymentResult == null)
                     throw new Exception("Error while Processing Payment.");
 
                 _logger.LogInformation(paymentResult.Success ? $"Payment processed successfully. TransactionId: {paymentResult.TransactionId}" : paymentResult.ErrorMessage);
+
+                var evento = new CompraRealizadaEvent(paymentResult.TransactionId ?? Guid.NewGuid(), paymentDetails.UserId, paymentDetails.GameId, paymentResult.Success, DateTime.Now);
+
+                await _orderProcessingService.ProcessPendingOrdersAsync(evento, "fila-liberar-jogo");
 
                 return paymentResult;
             }
@@ -62,6 +58,19 @@ namespace CloudGamesStore.Infrastructure.Services
                     ErrorMessage = "Payment processing failed"
                 };
             }
+        }
+
+        private async Task<PaymentResult> Payment(object request)
+        {
+            await Task.Delay(Random.Shared.Next(200, 1000));
+            var aprovado = Random.Shared.Next(100) < 50;
+
+            return new PaymentResult
+            {
+                Success = aprovado,
+                TransactionId = aprovado ? request.GetType().GetProperty("TransactionId")?.GetValue(request) as Guid? : null,
+                ErrorMessage = aprovado ? null : "Payment declined"
+            };
         }
     }
 }

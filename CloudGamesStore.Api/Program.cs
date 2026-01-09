@@ -77,6 +77,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddSingleton<IOrderProcessingService, OrderProcessingService>();
 builder.Services.AddApplicationInsightsTelemetry();
 //builder.Services.AddScoped<IGameServiceClient, GameServiceClient>();
 
@@ -135,9 +136,6 @@ builder.Services.AddCors(options =>
 //{
 //    options.Configuration = builder.Configuration.GetConnectionString("Redis");
 //});
-
-// Background Services
-builder.Services.AddHostedService<OrderProcessingBackgroundService>();
 
 // Health Checks
 //builder.Services.AddHealthChecks()

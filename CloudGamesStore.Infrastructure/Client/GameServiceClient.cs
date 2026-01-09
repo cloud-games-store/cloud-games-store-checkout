@@ -23,7 +23,7 @@ namespace CloudGamesStore.Infrastructure.Client
 
         public async Task<GameGenreDto> GetGamesByIdsAsync(string gameId)
         {
-            var response = await _httpClient.GetAsync("Games/" + gameId);
+            var response = await _httpClient.GetAsync("api/Games/" + gameId);
             try
             {
                 if (!response.IsSuccessStatusCode)
